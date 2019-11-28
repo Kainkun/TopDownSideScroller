@@ -5,11 +5,25 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
+    [HideInInspector]
+    public static Player script;
+
     bool isTopDown;
     float isTopDownTime;
 
     [SerializeField]
     float transitionSpeed = 2f;
+    [SerializeField]
+    GameObject Bullet;
+    [SerializeField]
+    GameObject BulletTrail;
+    [SerializeField]
+    float aimSpeed;
+    public Transform gunPivot;
+    [SerializeField]
+    float shootPower = 5;
+
+    float gunReload;
 
     [Header("Top Down")]
 
@@ -36,20 +50,27 @@ public class Player : MonoBehaviour
     float maxFallSpeed = 20f;
 
 
-    Vector2 move;
+    Vector2 move, aimDirection;
+    public float clicking;
 
     InputMaster controls;
     Rigidbody2D rb;
 
     private void Awake()
     {
+        script = this;
+
         rb = GetComponent<Rigidbody2D>();
         controls = new InputMaster();
 
-        controls.Player.Shoot.performed += ctx => Shoot();
+        //controls.Player.Shoot.performed += ctx => raycastShoot();
+        controls.Player.Shoot.performed += ctx => clicking = ctx.ReadValue<float>();
         controls.Player.Jump.performed += ctx => Jump();
         controls.Player.Movement.performed += ctx => move = ctx.ReadValue<Vector2>();
         controls.Player.Movement.canceled += ctx => move = Vector2.zero;
+        controls.Player.Aim.performed += ctx => aimDirection = ctx.ReadValue<Vector2>();
+        controls.Player.Aim.canceled += ctx => aimDirection = ctx.ReadValue<Vector2>();
+
     }
 
     void Start()
@@ -60,7 +81,14 @@ public class Player : MonoBehaviour
 
     void Update()
     {
-        print(move);
+        Aim();
+        gunReload += Time.deltaTime;
+        while(clicking >= 1 && gunReload > 0.1f)
+        {
+            raycastShoot();
+            projectileShoot();
+            gunReload = 0;
+        }
 
         if (isTopDown)
             isTopDownTime += Time.deltaTime * transitionSpeed;
@@ -132,14 +160,42 @@ public class Player : MonoBehaviour
 
     bool IsGrounded()
     {
-        RaycastHit2D hit = Physics2D.BoxCast(transform.position, new Vector2(1,1), 0, Vector2.down, 0.25f + Mathf.Epsilon);
+        RaycastHit2D hit = Physics2D.BoxCast(transform.position, new Vector2(0.5f, 0.5f), 0, Vector2.down, 0.25f + Mathf.Epsilon);
         return hit.collider != null;
     }
 
     //Action
-
-    void Shoot()
+    Vector2 lookDirection;
+    void Aim()
     {
+        Vector2 mouseScreenPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        lookDirection = (mouseScreenPosition - (Vector2)transform.position).normalized;
+
+        //lookDirection = aimDirection;
+
+        Vector2 lerpAimDirection;
+
+        lerpAimDirection = Vector3.Lerp(gunPivot.up, lookDirection, Time.deltaTime * aimSpeed);
+        gunPivot.up = lerpAimDirection;
+    }
+
+    void projectileShoot()
+    {
+        GameObject tempBullet = Instantiate(Bullet, transform.position + (Vector3)lookDirection, Quaternion.identity);
+        Rigidbody2D tempBulletRB = tempBullet.GetComponent<Rigidbody2D>();
+        tempBulletRB.AddForce(lookDirection * shootPower, ForceMode2D.Impulse);
+        if (isTopDown)
+            tempBulletRB.gravityScale = 0;
+
+        Destroy(tempBullet, 30);
+    }
+
+    void raycastShoot()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, gunPivot.up);
+        GameObject tempTrail = Instantiate(BulletTrail, transform.position, Quaternion.identity);
+        tempTrail.transform.up = lookDirection + Random.insideUnitCircle/50;
+        Destroy(tempTrail, 0.3f);
 
     }
 
@@ -156,13 +212,11 @@ public class Player : MonoBehaviour
     void SetTopDown()
     {
         isTopDown = true;
-        //rb.gravityScale = 0;
     }
 
     void SetSideScroll()
     {
         isTopDown = false;
-        //rb.gravityScale = gravityScale;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

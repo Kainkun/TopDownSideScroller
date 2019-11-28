@@ -41,27 +41,24 @@ public class @InputMaster : IInputActionCollection, IDisposable
                     ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Aim"",
+                    ""type"": ""Button"",
+                    ""id"": ""bc5ced58-81c0-452f-91d4-4fb1453d837f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
-                {
-                    ""name"": """",
-                    ""id"": ""1f265fd9-2d02-46e4-b0b9-7ee1fcd60b75"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": ""KeyboardMouse"",
-                    ""action"": ""Shoot"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
                 {
                     ""name"": """",
                     ""id"": ""6b69ad71-ec8d-4af7-8a05-3af0785ef526"",
                     ""path"": ""<Mouse>/leftButton"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": ""KeyboardMouse"",
+                    ""groups"": """",
                     ""action"": ""Shoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -76,6 +73,39 @@ public class @InputMaster : IInputActionCollection, IDisposable
                     ""action"": ""Shoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""1D Axis"",
+                    ""id"": ""fb354f00-b36e-4219-9a21-f94f543260ba"",
+                    ""path"": ""1DAxis"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shoot"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""negative"",
+                    ""id"": ""eb84bc60-59ce-499e-9e4c-c9f7ab3e06aa"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""positive"",
+                    ""id"": ""2b4d49ff-cba1-4d1b-8a58-ab8548510a5a"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""KeyboardMouse"",
+                    ""action"": ""Shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
                 },
                 {
                     ""name"": ""WASD"",
@@ -145,12 +175,56 @@ public class @InputMaster : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""e09c1fb3-a68d-4602-a8a3-b338f232bc73"",
+                    ""path"": ""<Gamepad>/dpad"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""49b4dd8c-0cdd-4727-b9af-f8f58fad7d98"",
                     ""path"": ""<Keyboard>/w"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""KeyboardMouse"",
                     ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c665df34-c28b-4d1a-8069-97a22a4612eb"",
+                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6b2d57a5-927d-42d0-890b-b26c860d67ca"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dfd3e050-e2d7-4269-adc3-203b3bc7d937"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Aim"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -192,6 +266,7 @@ public class @InputMaster : IInputActionCollection, IDisposable
         m_Player_Shoot = m_Player.FindAction("Shoot", throwIfNotFound: true);
         m_Player_Movement = m_Player.FindAction("Movement", throwIfNotFound: true);
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+        m_Player_Aim = m_Player.FindAction("Aim", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -244,6 +319,7 @@ public class @InputMaster : IInputActionCollection, IDisposable
     private readonly InputAction m_Player_Shoot;
     private readonly InputAction m_Player_Movement;
     private readonly InputAction m_Player_Jump;
+    private readonly InputAction m_Player_Aim;
     public struct PlayerActions
     {
         private @InputMaster m_Wrapper;
@@ -251,6 +327,7 @@ public class @InputMaster : IInputActionCollection, IDisposable
         public InputAction @Shoot => m_Wrapper.m_Player_Shoot;
         public InputAction @Movement => m_Wrapper.m_Player_Movement;
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
+        public InputAction @Aim => m_Wrapper.m_Player_Aim;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -269,6 +346,9 @@ public class @InputMaster : IInputActionCollection, IDisposable
                 @Jump.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
                 @Jump.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
                 @Jump.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnJump;
+                @Aim.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAim;
+                @Aim.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAim;
+                @Aim.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnAim;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -282,6 +362,9 @@ public class @InputMaster : IInputActionCollection, IDisposable
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
+                @Aim.started += instance.OnAim;
+                @Aim.performed += instance.OnAim;
+                @Aim.canceled += instance.OnAim;
             }
         }
     }
@@ -309,5 +392,6 @@ public class @InputMaster : IInputActionCollection, IDisposable
         void OnShoot(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+        void OnAim(InputAction.CallbackContext context);
     }
 }
