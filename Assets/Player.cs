@@ -12,6 +12,8 @@ public class Player : MonoBehaviour
     float isTopDownTime;
 
     [SerializeField]
+    bool usingController;
+    [SerializeField]
     float transitionSpeed = 2f;
     [SerializeField]
     GameObject Bullet;
@@ -119,16 +121,16 @@ public class Player : MonoBehaviour
     {
         if (move.x == 0)
             rb.velocity -= new Vector2(rb.velocity.x * TDstopSpeedPercent, 0);
-        else if (rb.velocity.x < TDmaxMoveSpeed && move.x > 0)
+        else if (rb.velocity.x < TDmaxMoveSpeed * move.x && move.x > 0)
             rb.AddForce(new Vector2(move.x * TDAcceleration, 0), ForceMode2D.Force);
-        else if (rb.velocity.x > -TDmaxMoveSpeed && move.x < 0)
+        else if (rb.velocity.x > TDmaxMoveSpeed * move.x && move.x < 0)
             rb.AddForce(new Vector2(move.x * TDAcceleration, 0), ForceMode2D.Force);
 
         if (move.y == 0)
             rb.velocity -= new Vector2(0, rb.velocity.y * TDstopSpeedPercent);
-        else if (rb.velocity.y < TDmaxMoveSpeed && move.y > 0)
+        else if (rb.velocity.y < TDmaxMoveSpeed * move.y && move.y > 0)
             rb.AddForce(new Vector2(0, move.y * TDAcceleration), ForceMode2D.Force);
-        else if (rb.velocity.y > -TDmaxMoveSpeed && move.y < 0)
+        else if (rb.velocity.y > TDmaxMoveSpeed * move.y && move.y < 0)
             rb.AddForce(new Vector2(0, move.y * TDAcceleration), ForceMode2D.Force);
 
 
@@ -139,9 +141,9 @@ public class Player : MonoBehaviour
     {
         if (move.x == 0)
             rb.velocity -= new Vector2(rb.velocity.x * stopSpeedPercent, 0);
-        else if (rb.velocity.x < maxMoveSpeed && move.x > 0)
+        else if (rb.velocity.x < maxMoveSpeed * move.x && move.x > 0)
             rb.AddForce(new Vector2(move.x * Acceleration, 0), ForceMode2D.Force);
-        else if (rb.velocity.x > -maxMoveSpeed && move.x < 0)
+        else if (rb.velocity.x > maxMoveSpeed * move.x && move.x < 0)
             rb.AddForce(new Vector2(move.x * Acceleration, 0), ForceMode2D.Force);
 
         if (-rb.velocity.y > maxFallSpeed)
@@ -171,7 +173,8 @@ public class Player : MonoBehaviour
         Vector2 mouseScreenPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         lookDirection = (mouseScreenPosition - (Vector2)transform.position).normalized;
 
-        //lookDirection = aimDirection;
+        if(usingController)
+            lookDirection = aimDirection;
 
         Vector2 lerpAimDirection;
 

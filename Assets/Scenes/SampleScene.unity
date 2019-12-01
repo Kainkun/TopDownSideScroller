@@ -1518,6 +1518,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac7bd24bf8a459b458fb11032a608c60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  usingController: 1
   transitionSpeed: 5
   Bullet: {fileID: 850358097656059387, guid: c71c5cf603aafed478cd847cc8a374be, type: 3}
   BulletTrail: {fileID: 1789345446324091101, guid: 16f63d6785722d84295d1589350d020f,
